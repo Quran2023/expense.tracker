@@ -28,7 +28,7 @@ with st.form("expense_form"):
     submitted = st.form_submit_button("Add Expense")
     if submitted:
         if category.strip():
-            add_expense(st.session_state.expenses, amount, category)
+            add_expense(st.session_state.expenses, amount, category, expense_date)
             st.success("Expense added!")
         else:
             st.warning("Please enter a valid category.")
