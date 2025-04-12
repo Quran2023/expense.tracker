@@ -14,7 +14,7 @@ def filter_expenses_by_category(expenses, category):
     return [expense for expense in expenses if expense['category'] == category]
 
 # Streamlit App
-st.title("Simple Expense Tracker")
+st.title("Track.io")
 
 # Store expenses in session state
 if 'expenses' not in st.session_state:
@@ -24,6 +24,7 @@ if 'expenses' not in st.session_state:
 with st.form("expense_form"):
     amount = st.number_input("Amount", min_value=0.0)  # Removed format="%.2f"
     category = st.text_input("Category")
+    st.date_input()
     submitted = st.form_submit_button("Add Expense")
     if submitted:
         if category.strip():
