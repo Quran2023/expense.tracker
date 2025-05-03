@@ -1,12 +1,11 @@
 import streamlit as st
-from datetime import date
 
-def add_expense(expenses, amount, category, expense_date):
-    expenses.append({'amount': amount, 'category': category, 'date': expense_date})
+def add_expense(expenses, amount, category):
+    expenses.append({'amount': amount, 'category': category})
 
 def print_expenses(expenses):
     for expense in expenses:
-        st.write(f'Date: {expense["date"]} | Amount: ${expense["amount"]} | Category: {expense["category"]}')
+        st.write(f'Amount: ${expense["amount"]}, Category: {expense["category"]}')
 
 def total_expenses(expenses):
     return sum(expense['amount'] for expense in expenses)
@@ -17,22 +16,20 @@ def filter_expenses_by_category(expenses, category):
 # Streamlit App
 st.title("Track.io")
 
-# Budget input at the top
-budget = st.number_input("Set your Budget", min_value=0.0)
-
 # Store expenses in session state
 if 'expenses' not in st.session_state:
     st.session_state.expenses = []
 
 # Add expense form
 with st.form("expense_form"):
-    amount = st.number_input("Amount", min_value=0.0)
+    amount = st.number_input("Amount", min_value=0.0)  # Removed format="%.2f"
     category = st.text_input("Category")
-    expense_date = st.date_input("Date", value=date.today())
+    date = st.date_input("date")
+    budget = st.number_input("set your budget", min_value=0.0)
     submitted = st.form_submit_button("Add Expense")
     if submitted:
         if category.strip():
-            add_expense(st.session_state.expenses, amount, category, expense_date)
+            add_expense(st.session_state.expenses, amount, category)
             st.success("Expense added!")
         else:
             st.warning("Please enter a valid category.")
@@ -46,15 +43,17 @@ else:
 
 # Show total
 st.subheader("Total Spent")
-total = total_expenses(st.session_state.expenses)
-st.write(f"${total}")
+st.write(f"${total_expenses(st.session_state.expenses)}")
 
-# Compare total to budget
-if budget > 0:
-    if total > budget:
-        st.error("You have exceeded your budget!")
-    else:
-        st.success("You are within your budget.")
+st.subheader("budget")
+if budget>0:
+    remaining = budget-amount
+    if remaining>=0:
+        st.success(f"you are witin budget.remaining:${remaining}")
+    else: 
+        st.error(f"you exceeded the budget by ${abs(remaining)}")
+else: 
+    st.info(no budget entered yet)
 
 # Filter by category
 st.subheader("Filter by Category")
