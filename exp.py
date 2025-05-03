@@ -17,6 +17,9 @@ def filter_expenses_by_category(expenses, category):
 # Streamlit App
 st.title("Track.io")
 
+# Budget input at the top
+budget = st.number_input("Set your Budget", min_value=0.0)
+
 # Store expenses in session state
 if 'expenses' not in st.session_state:
     st.session_state.expenses = []
@@ -43,7 +46,15 @@ else:
 
 # Show total
 st.subheader("Total Spent")
-st.write(f"${total_expenses(st.session_state.expenses)}")
+total = total_expenses(st.session_state.expenses)
+st.write(f"${total}")
+
+# Compare total to budget
+if budget > 0:
+    if total > budget:
+        st.error("You have exceeded your budget!")
+    else:
+        st.success("You are within your budget.")
 
 # Filter by category
 st.subheader("Filter by Category")
